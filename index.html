@@ -1,0 +1,287 @@
+<!doctype html>
+<html>
+<head>
+  <style>
+    body{
+      margin:0;
+      background-image: radial-gradient(violet, indigo);
+      background-repeat: no-repeat;
+      text-align: center;
+    }
+    #container{
+      width: 100vw;
+      height: 100vh;
+    }
+    .slide{
+      width: 100%;
+      height: 75%;
+      background-repeat: no-repeat;
+      background-position: 50% 50%;
+      display: block;
+      position:absolute;
+      transition: 2s;
+    }
+    #prev{
+      position: absolute;
+      bottom: -100px;
+      left: 10px;
+    }
+    #next{
+      position: absolute;
+      bottom: -100px;
+      right: 10px;
+    }
+    #numContainer{
+      position: absolute;
+      width: 60%;
+      left: 20%;
+      text-align:center;
+      bottom: -100px;
+    }
+    .active{
+      background:gold;
+    }
+    .playButton {
+      background-image: linear-gradient(to top, purple, grey);
+      background-repeat: no-repeat;
+      color: #000000;
+      padding: 10px;
+      border-radius: 10px;
+      -moz-border-radius: 10px;
+      -webkit-border-radius: 10px;
+      margin:10px
+    }
+    .stopButton {
+      background-image: linear-gradient(to top, grey, purple);
+      background-repeat: no-repeat;
+      color: #000000;
+      padding: 10px;
+      border-radius: 10px;
+      -moz-border-radius: 10px;
+      -webkit-border-radius: 10px;
+      margin:10px
+    }
+    .medium-btn {
+      width: 70px;
+      height: 30px;
+    }
+    .block {
+      display: block;
+      width: 100%;
+      border: none;
+      background-color: #90C7E3;
+      color: #555555;
+      padding: 14px 28px;
+      font-size: 20px;
+      cursor: pointer;
+      text-align: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .accordion {
+    	background-color: #371544;
+      background-image: linear-gradient(to top, indigo, grey);
+      background-repeat: no-repeat;
+    	color: #eeeeee;
+    	cursor: pointer;
+    	padding: 18px;
+    	width: 100%;
+    	border: none;
+    	text-align: center;
+    	outline: none;
+    	font-size: 30px;
+    	transition: 0.4s;
+      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+	  }
+	  .panel {
+ 	    padding: 0 18px;
+      background-color: purple;
+      background-repeat: no-repeat;
+      color: #ffffff;
+      text-align: center;
+	    max-height: 0;
+	    overflow: hidden;
+      font-size: 15px;
+	    transition: max-height 0.2s ease-out;
+      font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+	  }
+
+    .accordionTwo {
+    	background-color: #151944;
+      background-image: linear-gradient(to top, darkslateblue, lightblue);
+      background-repeat: no-repeat;
+    	color: #eeeeee;
+    	cursor: pointer;
+    	padding: 18px;
+    	width: 100%;
+    	border: none;
+    	text-align: center;
+    	outline: none;
+    	font-size: 30px;
+    	transition: 0.4s;
+      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+	  }
+
+	  .panelTwo {
+ 	    padding: 0 18px;
+      background-color: darkslateblue;
+      background-repeat: no-repeat;
+      color: #ffffff;
+      text-align: center;
+	    max-height: 0;
+	    overflow: hidden;
+      font-size: 15px;
+	    transition: max-height 0.2s ease-out;
+      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+	  }
+
+  </style>
+  <script>
+    var allImages = [];
+    var allPrompts = [];
+    var currentSlide = 0; 
+
+    function start(){
+      
+      allImages = ['images/handsome-necromancer-1.png',
+          'images/handsome-necromancer-2.png',
+          'images/handsome-necromancer-3.png',
+          'images/handsome-necromancer-4.png',
+          'images/handsome-necromancer-5.png',
+          'images/handsome-necromancer-6.png',
+          'images/handsome-necromancer-7.png',
+          'images/handsome-necromancer-8.png',
+          'images/handsome-necromancer-9.png']
+
+      allPrompts = ['It\'s time to play Matchmaker: Necromancer Edition!',
+          'It\'s time to play Matchmaker: Necromancer Edition!',
+          'It\'s time to play Matchmaker: Necromancer Edition!',
+          'It\'s time to play Matchmaker: Necromancer Edition!',
+          'It\'s time to play Matchmaker: Necromancer Edition!',
+          'It\'s time to play Matchmaker: Necromancer Edition!',
+          'It\'s time to play Matchmaker: Necromancer Edition!',
+          'It\'s time to play Matchmaker: Necromancer Edition!',
+          'It\'s time to play Matchmaker: Necromancer Edition!']
+      
+      var markup = "";
+      for(var i = 0; i < allImages.length; i++){
+        markup += "<div class='slide' style='background-image:url(" + allImages[i] + ")'></div>"
+      }
+      document.getElementById("container").innerHTML = markup;
+
+      markup = "";
+      for(var i = 0; i < allImages.length; i++){
+        markup += "<button onclick='numClicked(" + i + ")' class='num'>" + (i + 1) + "</button>"
+      }
+      document.getElementById("numContainer").innerHTML = markup;
+
+      goToCurrentSlide();
+    }
+
+    var goPrev = function(){
+      currentSlide = currentSlide - 1
+      if(currentSlide < 0){
+        currentSlide = allImages.length;
+      }
+      goToCurrentSlide();
+    }
+
+    var goNext = function(){
+      currentSlide = currentSlide + 1;
+      if(currentSlide >= allImages.length){
+        currentSlide = 0;
+      }
+      goToCurrentSlide();
+    }
+
+    var numClicked = function(n){
+      currentSlide = n;
+      goToCurrentSlide(); 
+    }
+
+    var goToCurrentSlide = function(){
+      var allImgObjs = document.getElementsByClassName("slide")
+      var allNumObjs = document.getElementsByClassName("num")
+      var allPromptObjs = document.getElementsByClassName("prompt")
+      
+      // Update the prompt
+      var markup = "<h3>" + allPrompts[currentSlide] + "</h3>"
+      document.getElementById("promptContainer").innerHTML = markup;
+
+      for(var i = 0; i < allImgObjs.length; i++){
+        if(i==currentSlide){
+          allImgObjs[i].style.opacity = "1";
+          allNumObjs[i].className = "num active"; 
+        }
+        else{
+          allImgObjs[i].style.opacity = "0";
+          allNumObjs[i].className = "num"; 
+        }
+      }
+    }
+
+    function play() {
+        audio = new Audio('music/VHS.mp3');
+        audio.play();
+        intervalId = window.setInterval(function(){
+          goNext();
+        }, 500);
+      }
+
+    function stop(){
+        clearInterval(intervalId);
+        audio.pause();
+    }
+
+  </script>
+</head>
+
+<body onload='start()'>
+  <button onclick="play()" class="playButton">Play</button>
+  <button onclick="stop()" class="stopButton">Unplay</button>
+
+  <div id='promptContainer'>
+    <h1 class='prompt'></h1>
+  </div>
+
+  <p>Play the music, and whoever you stop the music on will be yours.</p>
+
+  <div id='container'>
+  </div>
+  <div id='numContainer'>
+  </div>
+  
+  <button onclick='goPrev()' id='prev'> Prev </button>
+  <button onclick='goNext()' id='next'> Next </button>
+
+  <button class="accordion">Q: What rating would you give to the match you landed on?</button>
+  <div class="panel">
+    <ul>
+        <input type="number" min="1" max="10" name="spinner" id="spinner"><br>
+        (Don't hurt his pride)<br>
+    </ul>
+  </div>
+
+  <p>Music by 1beatproductions</p>
+  <p>Tune in next time for more NecRomance</p>
+
+  <script>
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+    
+    for (i = 0; i < acc.length; i++) {
+      acc[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var panel = this.nextElementSibling;
+        if (panel.style.maxHeight) {
+          panel.style.maxHeight = null;
+        } else {
+          panel.style.maxHeight = panel.scrollHeight + "px";
+        } 
+      });
+    }
+  </script>
+
+</body>
+
+</html>
